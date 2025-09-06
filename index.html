@@ -8,144 +8,198 @@
       margin: 0;
       padding: 0;
       background: #000;
-      color: white;
+      color: #fff;
       font-family: Arial, sans-serif;
-      text-align: center;
-    }
-
-    h1 {
-      color: cyan;
-      margin: 20px 0 10px;
-      font-size: 26px;
-    }
-
-    #prediction {
-      font-size: 20px;
-      font-weight: bold;
-      background: #111;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      padding: 12px 20px;
-      border-radius: 12px;
-      margin: 10px 0 20px;
-      border: 2px solid cyan;
-      box-shadow: 0 0 10px cyan;
+      height: 100vh;
     }
 
-    #prediction .icon {
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: inline-block;
+    .container {
+      background: #111;
+      border-radius: 20px;
+      padding: 25px 30px;
+      text-align: center;
+      box-shadow: 0 0 30px #00fff2;
+      border: 2px solid #00fff2;
+      max-width: 480px;
+      width: 95%;
     }
 
-    #controls {
-      margin-bottom: 15px;
+    h2, h3 {
+      color: #00fff2;
+      text-shadow: 0 0 10px #00fff2;
+      margin-bottom: 10px;
     }
 
     button {
       margin: 6px;
-      padding: 12px 20px;
+      padding: 12px 18px;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .banker-btn { background: #d32f2f; color: white; }
-    .player-btn { background: #1976d2; color: white; }
-    .tie-btn    { background: #388e3c; color: white; }
-    .undo-btn   { background: orange; color: white; }
-    .reset-btn  { background: #777; color: white; }
-    .open-btn   { background: cyan; color: black; }
-
-    h3 {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-
-    #history {
-      background: #111;
-      display: inline-block;
-      padding: 10px;
       border-radius: 10px;
-      margin-top: 10px;
-      max-width: 90%;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 16px;
+      color: #fff;
+      transition: 0.2s;
     }
+    button:hover { transform: scale(1.08); }
 
-    .circle {
-      width: 32px;
-      height: 32px;
+    .banker { background: #d32f2f; }
+    .player { background: #1976d2; }
+    .tie    { background: #388e3c; }
+    .undo   { background: #ff9800; }
+    .reset  { background: #777; }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    li {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       margin: 4px;
-      font-size: 16px;
+      font-size: 14px;
       font-weight: bold;
       color: white;
     }
+    .B { background: #d32f2f; }
+    .P { background: #1976d2; }
+    .T { background: #388e3c; }
 
-    .player { background: #1976d2; }
-    .banker { background: #d32f2f; }
-    .tie    { background: #388e3c; }
-
-    /* Popup modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border-radius: 12px;
-      border: 2px solid cyan;
-      box-shadow: 0 0 10px cyan;
-      width: 80%;
-      max-width: 500px;
-      text-align: center;
-      color: white;
-    }
-
-    .close-btn {
-      float: right;
+    #prediction {
       font-size: 20px;
-      cursor: pointer;
-      color: cyan;
-    }
-
-    .bookmarklet {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 15px;
-      background: cyan;
-      color: black;
+      margin: 15px 0;
       font-weight: bold;
-      border-radius: 8px;
-      text-decoration: none;
     }
-
-    /* Khối open tool dưới cùng */
-    #footer {
-      margin-top: 30px;
-      padding-bottom: 20px;
+    .dot {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      margin-left: 6px;
     }
+    .dot.player { background: #1976d2; }
+    .dot.banker { background: #d32f2f; }
   </style>
 </head>
 <body>
-  <h1>Baccarat Helper 🎲</h1>
-  <div id="prediction">Dự đoán: Chưa có dữ liệu</div>
-  <div id="controls">
+  <div class="container">
+    <h2>Baccarat Helper 🎲</h2>
+
+    <!-- Dự đoán -->
+    <div id="prediction">Chưa có dữ liệu</div>
+
+    <!-- Các nút -->
+    <div>
+      <button class="banker" onclick="addResult('B')">Banker</button>
+      <button class="player" onclick="addResult('P')">Player</button>
+      <button class="tie" onclick="addResult('T')">Tie</button>
+      <button class="undo" onclick="undo()">Undo</button>
+      <button class="reset" onclick="resetGame()">Reset</button>
+    </div>
+
+    <h3>Lịch sử</h3>
+    <ul id="history"></ul>
+  </div>
+
+  <script>
+    let results = [];
+
+    function addResult(r) {
+      results.push(r);
+      renderHistory();
+      predict();
+    }
+
+    function renderHistory() {
+      const historyEl = document.getElementById("history");
+      historyEl.innerHTML = "";
+      results.forEach(r => {
+        const li = document.createElement("li");
+        li.textContent = r;
+        li.className = r;
+        historyEl.appendChild(li);
+      });
+    }
+
+    // 🔥 Thuật toán Markov Chain + Streak Bias
+    function predict() {
+      const predEl = document.getElementById("prediction");
+
+      if (results.length < 3) {
+        predEl.textContent = "Chưa đủ dữ liệu";
+        return;
+      }
+
+      let last = results[results.length - 1];
+
+      // Kiểm tra streak (bệt)
+      let streak = 1;
+      for (let i = results.length - 2; i >= 0; i--) {
+        if (results[i] === last && last !== "T") streak++;
+        else break;
+      }
+
+      if (streak >= 3) {
+        // Nếu bệt >= 3 → theo bệt
+        if (last === "B") {
+          predEl.innerHTML = 'Dự đoán: Banker <span class="dot banker"></span>';
+        } else {
+          predEl.innerHTML = 'Dự đoán: Player <span class="dot player"></span>';
+        }
+        return;
+      }
+
+      // Markov Chain (đếm xác suất chuyển trạng thái)
+      let transitions = { B: { B: 0, P: 0 }, P: { B: 0, P: 0 } };
+
+      for (let i = 0; i < results.length - 1; i++) {
+        let cur = results[i];
+        let next = results[i + 1];
+        if ((cur === "B" || cur === "P") && (next === "B" || next === "P")) {
+          transitions[cur][next]++;
+        }
+      }
+
+      let lastChoice = results[results.length - 1];
+      if (lastChoice === "B" || lastChoice === "P") {
+        let counts = transitions[lastChoice];
+        let next = counts.B >= counts.P ? "B" : "P";
+
+        if (next === "B") {
+          predEl.innerHTML = 'Dự đoán: Banker <span class="dot banker"></span>';
+        } else {
+          predEl.innerHTML = 'Dự đoán: Player <span class="dot player"></span>';
+        }
+      } else {
+        predEl.textContent = "Cầu chưa rõ";
+      }
+    }
+
+    function undo() {
+      results.pop();
+      renderHistory();
+      predict();
+    }
+
+    function resetGame() {
+      results = [];
+      document.getElementById("history").innerHTML = "";
+      document.getElementById("prediction").textContent = "Chưa có dữ liệu";
+    }
+  </script>
+</body>
+</html>  <div id="controls">
     <button class="banker-btn" onclick="addResult('Banker')">Banker</button>
     <button class="player-btn" onclick="addResult('Player')">Player</button>
     <button class="tie-btn" onclick="addResult('Tie')">Tie</button>
